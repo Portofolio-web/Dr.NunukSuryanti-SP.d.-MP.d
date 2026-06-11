@@ -1,0 +1,912 @@
+﻿1 1 document.addEventListener("DOMContentLoaded", () => {
+2 1 
+3 1 const themeToggleBtn = document.getElementById("themeToggleBtn");
+4 1 const themeIcon = document.getElementById("themeIcon");
+5 1 const newsGlobalSearch = document.getElementById("newsGlobalSearch");
+6 1 const profileBtn = document.getElementById('profileBtn');
+7 1 
+8 1 const paneMainGrid = document.getElementById("pane-main-grid");
+9 1 const paneSingleKriteria = document.getElementById("pane-single-kriteria");
+10 1 const paneDetailArtikel = document.getElementById("pane-detail-artikel");
+11 1 
+12 1 const targetKriteriaName = document.getElementById("targetKriteriaName");
+13 1 const verticalFullListContainer = document.getElementById("verticalFullListContainer");
+14 1 
+15 1 const config = JSON.parse(localStorage.getItem("db_kriteria_config_v1")) || [
+16 1 { id: "edu", label: "Pendidikan", icon: "ri-book-open-line", storageKey: "db_edu_v5", fields: ["photo", "file", "course", "teacher", "desc"] },
+17 1 { id: "res", label: "Penelitian", icon: "ri-flask-line", storageKey: "db_res_v5", fields: ["photo", "link", "doi", "year", "course", "teacher", "desc"] },
+18 1 { id: "srv", label: "Pengabdian", icon: "ri-building-4-line", storageKey: "db_srv_v5", fields: ["photo", "mitra", "course", "teacher", "desc"] }
+19 1 ];
+20 1 
+21 2 document.addEventListener("DOMContentLoaded", () => {
+22 2 
+23 2 const themeToggleBtn = document.getElementById("themeToggleBtn");
+24 2 const themeIcon = document.getElementById("themeIcon");
+25 2 const newsGlobalSearch = document.getElementById("newsGlobalSearch");
+26 2 const profileBtn = document.getElementById('profileBtn');
+27 2 
+28 2 const paneMainGrid = document.getElementById("pane-main-grid");
+29 2 const paneSingleKriteria = document.getElementById("pane-single-kriteria");
+30 2 const paneDetailArtikel = document.getElementById("pane-detail-artikel");
+31 2 
+32 2 const targetKriteriaName = document.getElementById("targetKriteriaName");
+33 2 const verticalFullListContainer = document.getElementById("verticalFullListContainer");
+34 2 
+35 2 const config = JSON.parse(localStorage.getItem("db_kriteria_config_v1")) || [
+36 2 { id: "edu", label: "Pendidikan", icon: "ri-book-open-line", storageKey: "db_edu_v5", fields: ["photo", "file", "course", "teacher", "desc"] },
+37 2 { id: "res", label: "Penelitian", icon: "ri-flask-line", storageKey: "db_res_v5", fields: ["photo", "link", "doi", "year", "course", "teacher", "desc"] },
+38 2 { id: "srv", label: "Pengabdian", icon: "ri-building-4-line", storageKey: "db_srv_v5", fields: ["photo", "mitra", "course", "teacher", "desc"] }
+39 2 ];
+40 2 
+41 2 const dbMap = {};
+42 3 config.forEach(k => {
+43 3 const key = k.storageKey || `db_custom_${k.id}_v1`;
+44 3 dbMap[k.id] = JSON.parse(localStorage.getItem(key)) || [];
+45 2 });
+46 2 
+47 2 const thumbEdu = "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=150";
+48 2 const thumbRes = "https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=150";
+49 2 const thumbSrv = "https://images.unsplash.com/photo-1461532257341-81d394aec826?q=80&w=150";
+50 2 
+51 3 function renderHeaderTabs() {
+52 3 const container = document.getElementById("headerTabsContainer");
+53 3 if (!container) return;
+54 3 let html = `<span id="tab-all" class="nav-tab-item active" onclick="routeToEtalase()">Beranda</span>`;
+55 4 config.forEach(k => {
+56 4 html += `<span id="tab-${k.id}" class="nav-tab-item" onclick="routeToDetailKriteria('${k.id}')">${k.label}</span>`;
+57 3 });
+58 3 container.innerHTML = html;
+59 2 }
+60 2 
+61 3 function renderNewsGridColumns() {
+62 3 const container = document.getElementById("dynamicNewsGrid");
+63 3 if (!container) return;
+64 3 
+65 3 // Temporary diagnostic border as requested
+66 3 container.style.border = "2px solid red";
+67 3 container.style.minHeight = "50px";
+68 3 
+69 3 let sortedConfig = [...config];
+70 4 sortedConfig.sort((a, b) => {
+71 4 const dbA = dbMap[a.id] || [];
+72 4 const dbB = dbMap[b.id] || [];
+73 4 const maxA = dbA.length > 0 ? Math.max(...dbA.map(i => i.timestamp || 0)) : 0;
+74 4 const maxB = dbB.length > 0 ? Math.max(...dbB.map(i => i.timestamp || 0)) : 0;
+75 4 return maxB - maxA;
+76 3 });
+77 3 
+78 3 let html = "";
+79 4 sortedConfig.forEach(k => {
+80 4 html += `
+81 4 <div class="news-card-column">
+82 4 <div class="card-brand-header">
+83 4 <div class="brand-meta-title clickable-text" onclick="routeToDetailKriteria('${k.id}')">
+84 4 ${k.label}
+85 4 </div>
+86 4 <button class="btn-follow-star">
+87 4 <i class="ri-star-line"></i> Ikuti
+88 4 </button>
+89 4 </div>
+90 4 <div id="colStack-${k.id}" class="news-items-stack"></div>
+91 4 </div>
+92 4 `;
+93 3 });
+94 3 container.innerHTML = html;
+95 2 }
+96 2 
+97 2 renderHeaderTabs();
+98 2 renderNewsGridColumns();
+99 2 
+100 2 const sysName = localStorage.getItem("profile_name_v5") || "Nama Pemilik Website";
+101 2 
+102 2 document.getElementById("profileOwnerName").textContent = sysName;
+103 2 const copyrightEl = document.getElementById('copyrightText');
+104 2 if (copyrightEl) copyrightEl.textContent = `┬⌐ Copyright 2026 ┬╖ ${sysName}`;
+105 2 
+106 2 const brandNameEl = document.getElementById('brandName') || document.querySelector('.brand-logo-zone');
+107 2 if (brandNameEl) brandNameEl.textContent = sysName;
+108 2 
+109 2 // Set dynamic page title
+110 2 document.title = sysName + " - Portofolio Tri Dharma";
+111 2 
+112 2 const cachedDegree = localStorage.getItem("profile_degree_v5");
+113 3 if (cachedDegree) {
+114 3 const degreeEl = document.getElementById("profileDegreeTitle");
+115 3 if (degreeEl) degreeEl.textContent = cachedDegree;
+116 2 }
+117 2 
+118 2 const cachedBio = localStorage.getItem("profile_bio_v5");
+119 3 if (cachedBio) {
+120 3 const bioEl = document.getElementById("profileBioText");
+121 3 if (bioEl) bioEl.textContent = cachedBio;
+122 2 }
+123 2 
+124 2 const cachedPhoto = localStorage.getItem("profile_avatar_v5");
+125 3 if (cachedPhoto) {
+126 3 const imgEl = document.getElementById("mainProfileImg");
+127 3 if (imgEl) imgEl.src = cachedPhoto;
+128 2 }
+129 2 
+130 2 // Navigation history tracker
+131 2 let currentViewContext = "all";
+132 2 
+133 2 // Normalize and set contact links (WA / FB / Email)
+134 3 (function setFooterContacts(){
+135 3 const rawWa = (localStorage.getItem("profile_wa_v5") || "").trim();
+136 3 const rawFb = (localStorage.getItem("profile_fb_v5") || "").trim();
+137 3 const rawEm = (localStorage.getItem("profile_email_v5") || "").trim();
+138 3 
+139 3 const waEl = document.getElementById("ftWA");
+140 3 const fbEl = document.getElementById("ftFB");
+141 3 const emEl = document.getElementById("ftEmail");
+142 3 
+143 4 if(waEl) {
+144 4 if(!rawWa) waEl.href = '#';
+145 5 else {
+146 5 let waHref = rawWa;
+147 5 const digits = rawWa.replace(/[^\d\+]/g, '');
+148 6 if(/^\+?\d{6,}$/.test(digits)) {
+149 6 const num = digits.replace(/^\+/, '');
+150 6 waHref = `https://wa.me/${num}`;
+151 6 } else if(!/^https?:\/\//i.test(waHref)) {
+152 6 waHref = 'https://' + waHref;
+153 5 }
+154 5 waEl.href = waHref;
+155 5 waEl.target = '_blank';
+156 4 }
+157 3 }
+158 3 
+159 4 if(fbEl) {
+160 4 if(!rawFb) fbEl.href = '#';
+161 5 else {
+162 5 let fbHref = rawFb;
+163 5 if(!/^https?:\/\//i.test(fbHref)) fbHref = `https://facebook.com/${fbHref.replace(/^@/, '')}`;
+164 5 fbEl.href = fbHref;
+165 5 fbEl.target = '_blank';
+166 4 }
+167 3 }
+168 3 
+169 4 if(emEl) {
+170 4 if(!rawEm) emEl.href = 'mailto:admin@domain.com';
+171 4 else emEl.href = `mailto:${rawEm}`;
+172 3 }
+173 2 })();
+174 2 
+175 2 
+176 2 
+177 2 // Profile button: go direct to dashboard when logged in, otherwise to admin login
+178 3 if(profileBtn) {
+179 4 profileBtn.addEventListener('click', () => {
+180 4 const logged = localStorage.getItem('isLoggedIn');
+181 4 if (logged === 'true') window.location.href = 'admin/';
+182 4 else window.location.href = 'admin.html';
+183 3 });
+184 2 }
+185 2 
+186 2 // Fix: safely handle clicks when event.target may be a text node
+187 3 document.body.addEventListener("click", (e) => {
+188 3 const target = e.target instanceof Element ? e.target : e.target.parentElement;
+189 3 const el = target ? target.closest("h2, h3, h4, p, .brand-meta-title") : null;
+190 4 if (el && !el.closest('.btn-follow-star')) {
+191 4 el.classList.add("clicked-blue");
+192 5 setTimeout(() => {
+193 5 el.classList.remove("clicked-blue");
+194 4 }, 1500);
+195 3 }
+196 2 });
+197 2 
+198 2 /* ========================================
+199 2 DATE & RELATIVE TIME PARSER
+200 2 ======================================== */
+201 3 function parseIndoDate(dateStr) {
+202 3 if (!dateStr || typeof dateStr !== 'string') return null;
+203 4 const months = {
+204 4 'januari': 0, 'februari': 1, 'maret': 2, 'april': 3, 'mei': 4, 'juni': 5,
+205 4 'juli': 6, 'agustus': 7, 'september': 8, 'oktober': 9, 'november': 10, 'desember': 11
+206 3 };
+207 4 try {
+208 4 const clean = dateStr.toLowerCase().replace(/pukul/g, ' ').replace(/:/g, '.').trim();
+209 4 const parts = clean.split(/\s+/);
+210 5 if (parts.length >= 3) {
+211 5 const day = parseInt(parts[0], 10);
+212 5 const monthName = parts[1];
+213 5 const month = months[monthName] !== undefined ? months[monthName] : 4;
+214 5 const year = parseInt(parts[2], 10);
+215 5 let hour = 12;
+216 5 let minute = 0;
+217 6 if (parts.length >= 4) {
+218 6 const timeParts = parts[3].split('.');
+219 7 if (timeParts.length >= 2) {
+220 7 hour = parseInt(timeParts[0], 10);
+221 7 minute = parseInt(timeParts[1], 10);
+222 6 }
+223 5 }
+224 5 return new Date(year, month, day, hour, minute).getTime();
+225 4 }
+226 3 } catch (e) { }
+227 3 return null;
+228 2 }
+229 2 
+230 3 function getRelativeTime(timestamp, fallbackStr) {
+231 3 let timeMs = timestamp;
+232 4 if (!timeMs && fallbackStr) {
+233 4 timeMs = parseIndoDate(fallbackStr);
+234 3 }
+235 3 if (!timeMs) return "Baru saja";
+236 3 
+237 3 const diffMs = Date.now() - timeMs;
+238 3 
+239 3 const diffSecs = Math.floor(diffMs / 1000);
+240 3 const diffMins = Math.floor(diffSecs / 60);
+241 3 const diffHours = Math.floor(diffMins / 60);
+242 3 const diffDays = Math.floor(diffHours / 24);
+243 3 
+244 3 if (diffSecs < 60) return "Baru saja";
+245 3 if (diffMins < 60) return `${diffMins} menit yang lalu`;
+246 3 if (diffHours < 24) return `${diffHours} jam yang lalu`;
+247 3 if (diffDays === 1) return "Kemarin";
+248 3 return `${diffDays} hari yang lalu`;
+249 2 }
+250 2 
+251 2 /* ========================================
+252 2 ATTACHMENT, REFERENCE, & LINK PARSER
+253 2 ======================================== */
+254 3 function linkify(text) {
+255 3 if (!text) return "";
+256 3 const escaped = text
+257 3 .replace(/&/g, "&amp;")
+258 3 .replace(/</g, "&lt;")
+259 3 .replace(/>/g, "&gt;")
+260 3 .replace(/"/g, "&quot;")
+261 3 .replace(/'/g, "&#039;");
+262 3 
+263 3 const urlRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+264 4 return escaped.replace(urlRegex, function (url) {
+265 4 return `<a href="${url}" target="_blank" style="color: var(--accent-blue); text-decoration: underline;">${url}</a>`;
+266 3 });
+267 2 }
+268 2 
+269 3 function getMediaPath(url) {
+270 3 if (!url) return null;
+271 3 const str = String(url).trim();
+272 4 if (str.startsWith('http://') || str.startsWith('https://') || str.startsWith('data:')) {
+273 5 if (str.includes('drive.google.com/file/d/')) {
+274 5 const match = str.match(/\/d\/(.*?)\//);
+275 6 if (match && match[1]) {
+276 6 return `https://drive.google.com/uc?export=view&id=${match[1]}`;
+277 5 }
+278 4 }
+279 4 return str;
+280 3 }
+281 3 const cleanPath = str.replace(/^\/+/, '');
+282 4 if (cleanPath.startsWith('admin/uploads/')) {
+283 4 return '/' + cleanPath;
+284 3 }
+285 3 return '/admin/uploads/' + cleanPath;
+286 2 }
+287 2 
+288 3 function renderAttachments(entry, index, type) {
+289 3 let html = '';
+290 4 if (entry.file) {
+291 4 const isBase64 = entry.file.startsWith('data:');
+292 5 if (isBase64) {
+293 5 const mimeMatch = entry.file.match(/data:([^;]+);/);
+294 5 const mimeType = mimeMatch ? mimeMatch[1] : '';
+295 5 
+296 6 if (mimeType.startsWith('image/')) {
+297 6 html += `
+298 6 <div class="attachment-preview-box">
+299 6 <span class="attachment-label"><i class="ri-image-line"></i> Pratinjau Gambar Lampiran:</span>
+300 6 <img src="${entry.file}" class="attachment-img-preview" alt="Lampiran" onclick="window.open('${entry.file}', '_blank')">
+301 6 </div>
+302 6 `;
+303 6 } else {
+304 6 let fileIcon = 'ri-file-line';
+305 6 let fileLabel = 'Unduh Lampiran';
+306 6 
+307 7 if (mimeType.includes('pdf')) {
+308 7 fileIcon = 'ri-file-pdf-line';
+309 7 fileLabel = 'Buka / Unduh Lampiran PDF';
+310 7 } else if (mimeType.includes('word') || mimeType.includes('msword') || mimeType.includes('officedocument.wordprocessingml')) {
+311 7 fileIcon = 'ri-file-word-line';
+312 7 fileLabel = 'Unduh Dokumen Word';
+313 7 } else if (mimeType.includes('sheet') || mimeType.includes('excel') || mimeType.includes('officedocument.spreadsheetml')) {
+314 7 fileIcon = 'ri-file-excel-line';
+315 7 fileLabel = 'Unduh Berkas Excel';
+316 7 } else if (mimeType.includes('presentation') || mimeType.includes('powerpoint') || mimeType.includes('officedocument.presentationml')) {
+317 7 fileIcon = 'ri-file-ppt-line';
+318 7 fileLabel = 'Unduh Presentasi PPT';
+319 7 } else if (mimeType.includes('zip') || mimeType.includes('rar') || mimeType.includes('octet-stream')) {
+320 7 fileIcon = 'ri-folder-zip-line';
+321 7 fileLabel = 'Unduh Berkas Kompresi (ZIP/RAR)';
+322 6 }
+323 6 
+324 6 html += `
+325 6 <div class="attachment-action-box">
+326 6 <button class="premium-download-btn" onclick="openBase64File(${index}, '${type}')">
+327 6 <i class="${fileIcon}"></i> ${fileLabel}
+328 6 </button>
+329 6 </div>
+330 6 `;
+331 5 }
+332 5 } else {
+333 5 const resolvedUrl = getMediaPath(entry.file);
+334 5 html += renderUrlButton(resolvedUrl);
+335 4 }
+336 3 }
+337 3 
+338 4 if (html) {
+339 4 return `
+340 4 <h4 style="font-size:18px; font-weight:700; color:var(--text-main); margin-bottom:16px; border-bottom:1px solid var(--border-color); padding-bottom:8px;">Lampiran</h4>
+341 4 <div style="display:flex; flex-direction:column; gap:12px;">
+342 4 ${html}
+343 4 </div>
+344 4 `;
+345 3 }
+346 3 return '';
+347 2 }
+348 2 
+349 3 function renderReferences(entry) {
+350 3 let html = '';
+351 4 if (entry.link) {
+352 4 html += renderUrlButton(entry.link, 'Sumber Jurnal / Link Eksternal');
+353 3 }
+354 4 if (entry.doiLink) {
+355 4 html += renderUrlButton(entry.doiLink, `DOI: ${entry.doi || 'Tautan DOI'}`);
+356 3 }
+357 3 
+358 4 if (html) {
+359 4 return `
+360 4 <h4 style="font-size:18px; font-weight:700; color:var(--text-main); margin-bottom:16px; border-bottom:1px solid var(--border-color); padding-bottom:8px;">Referensi</h4>
+361 4 <div style="display:flex; flex-direction:column; gap:12px;">
+362 4 ${html}
+363 4 </div>
+364 4 `;
+365 3 }
+366 3 return '';
+367 2 }
+368 2 
+369 3 function renderUrlButton(url, defaultLabel = 'Buka Lampiran') {
+370 3 if (!url) return '';
+371 3 url = url.trim();
+372 3 
+373 3 let label = defaultLabel;
+374 3 let icon = 'ri-external-link-line';
+375 3 let buttonClass = 'premium-link-btn';
+376 3 
+377 4 if (url.includes('drive.google.com')) {
+378 4 label = 'Buka Lampiran Google Drive';
+379 4 icon = 'ri-google-fill';
+380 4 buttonClass = 'gdrive-btn';
+381 4 } else if (url.includes('youtube.com') || url.includes('youtu.be')) {
+382 4 label = 'Tonton Video Materi (YouTube)';
+383 4 icon = 'ri-youtube-fill';
+384 4 buttonClass = 'youtube-btn';
+385 4 } else if (url.includes('github.com')) {
+386 4 label = 'Lihat Repositori GitHub';
+387 4 icon = 'ri-github-fill';
+388 4 buttonClass = 'github-btn';
+389 3 }
+390 3 
+391 3 return `
+392 3 <div class="attachment-action-box">
+393 3 <a href="${url}" target="_blank" class="${buttonClass}">
+394 3 <i class="${icon}"></i> ${label}
+395 3 </a>
+396 3 </div>
+397 3 `;
+398 2 }
+399 2 
+400 2 /* ========================================
+401 2 IMAGE SLIDER (CAROUSEL) ENGINE
+402 2 ======================================== */
+403 2 window.appSliders = {};
+404 2 
+405 3 window.buildSliderHtml = function(photos, sliderId) {
+406 3 if (!photos || photos.length === 0) return '';
+407 4 if (photos.length === 1) {
+408 4 return `<div class="article-thumbnail"><img src="${photos[0]}" onerror="this.style.display='none'" loading="lazy"></div>`;
+409 3 }
+410 3 
+411 4 window.appSliders[sliderId] = {
+412 4 currentIndex: 0,
+413 4 total: photos.length,
+414 4 interval: null
+415 3 };
+416 3 
+417 3 let tracks = photos.map((src, i) => `
+418 3 <div class="slider-slide">
+419 3 <img src="${src}" onerror="this.style.display='none'" loading="lazy" alt="Image ${i+1}">
+420 3 </div>
+421 3 `).join('');
+422 3 
+423 3 let dots = photos.map((_, i) => `
+424 3 <div class="slider-dot ${i === 0 ? 'active' : ''}" onclick="event.stopPropagation(); window.goToSlide('${sliderId}', ${i})"></div>
+425 3 `).join('');
+426 3 
+427 3 setTimeout(() => { window.startAutoSlide(sliderId); }, 500);
+428 3 
+429 3 return `
+430 3 <div class="slider-container" id="slider-${sliderId}" onclick="event.stopPropagation()">
+431 3 <div class="slider-track" id="track-${sliderId}">
+432 3 ${tracks}
+433 3 </div>
+434 3 <button type="button" class="slider-btn prev" onclick="event.stopPropagation(); window.moveSlide('${sliderId}', -1)">
+435 3 <i class="ri-arrow-left-s-line"></i>
+436 3 </button>
+437 3 <button type="button" class="slider-btn next" onclick="event.stopPropagation(); window.moveSlide('${sliderId}', 1)">
+438 3 <i class="ri-arrow-right-s-line"></i>
+439 3 </button>
+440 3 <div class="slider-dots" id="dots-${sliderId}">
+441 3 ${dots}
+442 3 </div>
+443 3 </div>
+444 3 `;
+445 2 };
+446 2 
+447 3 window.moveSlide = function(sliderId, direction) {
+448 3 const state = window.appSliders[sliderId];
+449 3 if (!state) return;
+450 3 let newIndex = state.currentIndex + direction;
+451 3 if (newIndex < 0) newIndex = state.total - 1;
+452 3 if (newIndex >= state.total) newIndex = 0;
+453 3 window.goToSlide(sliderId, newIndex);
+454 2 };
+455 2 
+456 3 window.goToSlide = function(sliderId, index) {
+457 3 const state = window.appSliders[sliderId];
+458 3 if (!state) return;
+459 3 state.currentIndex = index;
+460 3 
+461 3 const track = document.getElementById(`track-${sliderId}`);
+462 4 if (track) {
+463 4 track.style.transform = `translateX(-${index * 100}%)`;
+464 3 }
+465 3 
+466 3 const dotsContainer = document.getElementById(`dots-${sliderId}`);
+467 4 if (dotsContainer) {
+468 4 const dots = dotsContainer.querySelectorAll('.slider-dot');
+469 5 dots.forEach((dot, i) => {
+470 5 if (i === index) dot.classList.add('active');
+471 5 else dot.classList.remove('active');
+472 4 });
+473 3 }
+474 3 
+475 3 window.startAutoSlide(sliderId);
+476 2 };
+477 2 
+478 3 window.startAutoSlide = function(sliderId) {
+479 3 const state = window.appSliders[sliderId];
+480 3 if (!state) return;
+481 3 if (state.interval) clearInterval(state.interval);
+482 3 
+483 4 state.interval = setInterval(() => {
+484 4 const el = document.getElementById(`slider-${sliderId}`);
+485 5 if (!el) {
+486 5 clearInterval(state.interval);
+487 5 return;
+488 4 }
+489 4 let newIndex = state.currentIndex + 1;
+490 4 if (newIndex >= state.total) newIndex = 0;
+491 4 
+492 4 state.currentIndex = newIndex;
+493 4 const track = document.getElementById(`track-${sliderId}`);
+494 4 if (track) track.style.transform = `translateX(-${newIndex * 100}%)`;
+495 4 
+496 4 const dotsContainer = document.getElementById(`dots-${sliderId}`);
+497 5 if (dotsContainer) {
+498 5 const dots = dotsContainer.querySelectorAll('.slider-dot');
+499 6 dots.forEach((dot, i) => {
+500 6 if (i === newIndex) dot.classList.add('active');
+501 6 else dot.classList.remove('active');
+502 5 });
+503 4 }
+504 3 }, 3000);
+505 2 };
+506 2 
+507 2 /* ========================================
+508 2 HOMEPAGE RENDER (HORIZONTAL CARDS)
+509 2 ======================================== */
+510 3 function renderGoogleNewsGrid() {
+511 4 config.forEach(k => {
+512 4 const stackEl = document.getElementById(`colStack-${k.id}`);
+513 4 if (!stackEl) return;
+514 4 
+515 4 const db = dbMap[k.id] || [];
+516 4 console.log(`Fetched Data for ${k.id}:`, db);
+517 4 
+518 5 if (!db || db.length === 0) {
+519 5 stackEl.innerHTML = `<p style="color:white; text-align:center;">Belum ada data portofolio.</p>`;
+520 5 } else {
+521 5 let html = "";
+522 5 let displayList = db.map((item, index) => ({ item, index }));
+523 5 displayList.sort((a, b) => (b.item?.timestamp || 0) - (a.item?.timestamp || 0));
+524 5 
+525 6 try {
+526 7 displayList.forEach((wrapper) => {
+527 7 const item = wrapper.item || {};
+528 7 const index = wrapper.index;
+529 7 const title = item.title || 'Tanpa Judul';
+530 7 const courseLabel = item.course || (item.year ? `Tahun: ${item.year}` : null) || k.label || 'Umum';
+531 7 const lecturerLabel = item.teacher || item.mitra || sysName || 'Admin';
+532 7 
+533 7 let photoSrc = null;
+534 7 let mediaHtml = "";
+535 7 let photos = Array.isArray(item.photo) ? item.photo : (item.photo ? [item.photo] : []);
+536 7 photos = photos.map(getMediaPath).filter(Boolean);
+537 7 
+538 8 if (photos && photos.length > 1) {
+539 8 mediaHtml = `<div class="article-thumbnail" style="width:100%; max-width:180px; flex-shrink:0; background:#f3f4f6; border-radius:8px; overflow:hidden;">${window.buildSliderHtml(photos, `grid-${k.id}-${index}`)}</div>`;
+540 8 } else if (photos && photos.length === 1) {
+541 8 mediaHtml = `
+542 8 <div class="article-thumbnail" style="width:100%; max-width:180px; flex-shrink:0; position:relative; background:#f3f4f6; display:flex; align-items:center; justify-content:center; border-radius:8px; overflow:hidden; min-height:120px;">
+543 8 <i class="ri-image-line" style="position:absolute; font-size:24px; color:#9ca3af; z-index:1;"></i>
+544 8 <img src="${photos[0]}" onerror="this.style.display='none'" alt="${title}" loading="lazy" style="position:relative; z-index:2; width:100%; height:100%; object-fit:cover;">
+545 8 </div>
+546 8 `;
+547 8 } else {
+548 8 mediaHtml = `
+549 8 <div class="article-thumbnail" style="width:100%; max-width:180px; flex-shrink:0; background:#f3f4f6; display:flex; flex-direction:column; align-items:center; justify-content:center; border-radius:8px; overflow:hidden; min-height:120px; border:1px dashed #d1d5db;">
+550 8 <i class="ri-image-line" style="font-size:24px; color:#9ca3af; margin-bottom:4px;"></i>
+551 8 <span style="font-size:11px; color:#9ca3af; font-weight:500;">No Image</span>
+552 8 </div>
+553 8 `;
+554 7 }
+555 7 
+556 7 let docHtml = "";
+557 8 if (item.file) {
+558 8 const fileUrl = getMediaPath(item.file);
+559 9 if (fileUrl) {
+560 9 docHtml = `
+561 9 <div style="margin-top:12px;" onclick="event.stopPropagation()">
+562 9 <a href="${fileUrl}" target="_blank" rel="noopener" style="display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:600; color:#2563eb; background:#eff6ff; padding:6px 12px; border-radius:6px; border:1px solid #bfdbfe; text-decoration:none; transition:all 0.2s;">
+563 9 <i class="ri-file-text-line"></i> Lihat Lampiran
+564 9 </a>
+565 9 </div>
+566 9 `;
+567 8 }
+568 7 }
+569 7 
+570 7 html += `
+571 7 <div class="article-card card-${k.id}" onclick="showParentDetail(${index}, '${k.id}')">
+572 7 <div class="article-content" style="flex:1;">
+573 7 <h3>${title}</h3>
+574 7 <p class="lecturer">${lecturerLabel}</p>
+575 7 <p class="course">${courseLabel}</p>
+576 7 <p class="time">${getRelativeTime(item.timestamp, item.publishDate)}</p>
+577 7 ${docHtml}
+578 7 </div>
+579 7 ${mediaHtml}
+580 7 </div>
+581 7 `;
+582 6 });
+583 6 stackEl.innerHTML = html;
+584 6 } catch (err) {
+585 6 console.error("Error rendering grid loop:", err);
+586 6 stackEl.innerHTML = `<p style="color:red; text-align:center;">Terjadi kesalahan saat merender data.</p>`;
+587 5 }
+588 4 }
+589 3 });
+590 2 }
+591 2 
+592 3 window.routeToEtalase = function () {
+593 3 currentViewContext = "all";
+594 3 switchActiveTabIndicator("tab-all");
+595 3 paneSingleKriteria.classList.remove("active");
+596 3 paneDetailArtikel.classList.remove("active");
+597 3 paneMainGrid.classList.add("active");
+598 3 newsGlobalSearch.value = "";
+599 3 triggerLiveSearchFilter("");
+600 3 window.scrollTo({ top: 0, behavior: 'smooth' });
+601 2 };
+602 2 
+603 3 window.routeToDetailKriteria = function (kriteriaKey, directIndex) {
+604 3 currentViewContext = kriteriaKey;
+605 3 switchActiveTabIndicator("tab-" + kriteriaKey);
+606 3 paneMainGrid.classList.remove("active");
+607 3 paneDetailArtikel.classList.remove("active");
+608 3 paneSingleKriteria.classList.add("active");
+609 3 verticalFullListContainer.innerHTML = "";
+610 3 newsGlobalSearch.value = "";
+611 3 
+612 3 verticalFullListContainer.style.border = '';
+613 3 verticalFullListContainer.style.boxShadow = '';
+614 3 verticalFullListContainer.style.background = '';
+615 3 verticalFullListContainer.style.padding = '';
+616 3 verticalFullListContainer.style.maxWidth = '';
+617 3 
+618 3 verticalFullListContainer.className = '';
+619 3 verticalFullListContainer.style.background = 'transparent';
+620 3 verticalFullListContainer.style.padding = '0';
+621 3 verticalFullListContainer.style.margin = '0';
+622 3 verticalFullListContainer.style.width = '100%';
+623 3 verticalFullListContainer.style.boxShadow = 'none';
+624 3 verticalFullListContainer.style.border = 'none';
+625 3 
+626 4 if (directIndex !== undefined) {
+627 4 const db = dbMap[kriteriaKey] || [];
+628 4 const targetData = db[directIndex];
+629 5 if (targetData) {
+630 5 showParentDetail(directIndex, kriteriaKey);
+631 5 return;
+632 4 }
+633 3 }
+634 3 
+635 4 function buildGalleryItemsFrom(entries, typeId) {
+636 4 const gallery = [];
+637 4 const k = config.find(c => c.id === typeId);
+638 4 
+639 5 entries.forEach((entry, pIdx) => {
+640 5 let photos = Array.isArray(entry.photo) ? entry.photo : (entry.photo ? [entry.photo] : []);
+641 5 photos = photos.map(getMediaPath).filter(Boolean);
+642 5 
+643 6 gallery.push({
+644 6 photo: photos.length ? photos[0] : null,
+645 6 photos: photos,
+646 6 hasOriginalPhoto: photos.length > 0,
+647 6 title: entry.title,
+648 6 desc: entry.desc || '',
+649 6 file: entry.file || '',
+650 6 publishDate: entry.publishDate || '',
+651 6 timestamp: entry.timestamp || null,
+652 6 course: entry.course || '',
+653 6 teacher: entry.teacher || '',
+654 6 parentIndex: pIdx
+655 5 });
+656 4 });
+657 4 gallery.sort((a, b) => b.timestamp - a.timestamp);
+658 4 return gallery;
+659 3 }
+660 3 
+661 3 /* ========================================
+662 3 CATEGORY SINGLE COLUMN LAYOUT
+663 3 ======================================== */
+664 4 function renderGalleryPage(galleryItems, page, type) {
+665 4 const perPage = 6;
+666 4 const totalPages = Math.max(1, Math.ceil(galleryItems.length / perPage));
+667 4 const cur = Math.min(Math.max(1, page), totalPages);
+668 4 const start = (cur - 1) * perPage;
+669 4 const slice = galleryItems.slice(start, start + perPage);
+670 4 
+671 4 verticalFullListContainer.innerHTML = '';
+672 4 
+673 5 if (slice.length === 0) {
+674 5 verticalFullListContainer.innerHTML = `<p class="empty-stack-info">Tidak ada berkas/dokumen untuk ditampilkan.</p>`;
+675 5 return;
+676 4 }
+677 4 
+678 4 const k = config.find(c => c.id === type);
+679 4 const kLabel = k ? k.label : type;
+680 4 
+681 4 let columnHtml = '<div class="w-full flex flex-col items-start justify-start text-left mt-6">';
+682 4 columnHtml += '<div class="w-full flex flex-col gap-6">';
+683 4 
+684 5 try {
+685 6 slice.forEach((gi, idx) => {
+686 6 if (!gi) return;
+687 6 const title = gi.title || 'Tanpa Judul';
+688 6 const relTime = getRelativeTime(gi.timestamp, gi.publishDate);
+689 6 const courseText = gi.course || (gi.year ? `Tahun: ${gi.year}` : null) || kLabel || 'Umum';
+690 6 const teacherText = gi.teacher || gi.mitra || sysName || 'Admin';
+691 6 const imgContainerStyle = "width:100%; max-width:224px; min-height:150px; flex-shrink:0; position:relative; background:#f3f4f6; display:flex; align-items:center; justify-content:center; border-radius:8px; overflow:hidden;";
+692 6 let mediaHtml = '';
+693 6 
+694 7 if (gi.hasOriginalPhoto && gi.photos) {
+695 8 if (gi.photos.length > 1) {
+696 8 mediaHtml = `<div style="${imgContainerStyle}">${window.buildSliderHtml(gi.photos, `gallery-${type}-${idx}`)}</div>`;
+697 8 } else if (gi.photos.length === 1) {
+698 8 mediaHtml = `
+699 8 <div style="${imgContainerStyle}">
+700 8 <i class="ri-image-line" style="position:absolute; font-size:24px; color:#9ca3af; z-index:1;"></i>
+701 8 <img src="${gi.photo}" onerror="this.style.display='none'" alt="${title}" loading="lazy" style="position:relative; z-index:2; width:100%; height:100%; object-fit:cover;">
+702 8 </div>
+703 8 `;
+704 7 }
+705 7 } else {
+706 7 mediaHtml = `
+707 7 <div style="${imgContainerStyle} border:1px dashed #d1d5db; flex-direction:column;">
+708 7 <i class="ri-image-line" style="font-size:24px; color:#9ca3af; margin-bottom:4px;"></i>
+709 7 <span style="font-size:11px; color:#9ca3af; font-weight:500;">No Image</span>
+710 7 </div>
+711 7 `;
+712 6 }
+713 6 
+714 6 let docHtml = "";
+715 7 if (gi.file) {
+716 7 const fileUrl = getMediaPath(gi.file);
+717 8 if (fileUrl) {
+718 8 docHtml = `
+719 8 <div style="margin-top:12px;" onclick="event.stopPropagation()">
+720 8 <a href="${fileUrl}" target="_blank" rel="noopener" style="display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:600; color:#2563eb; background:#eff6ff; padding:6px 12px; border-radius:6px; border:1px solid #bfdbfe; text-decoration:none; transition:all 0.2s;">
+721 8 <i class="ri-file-text-line"></i> Lihat Lampiran
+722 8 </a>
+723 8 </div>
+724 8 `;
+725 7 }
+726 6 }
+727 6 
+728 6 columnHtml += `
+729 6 <div class="w-full flex flex-col md:flex-row gap-4 mb-6" style="cursor:pointer;" onclick="showParentDetail(${gi.parentIndex}, '${type}')">
+730 6 ${mediaHtml}
+731 6 
+732 6 <div class="flex-1 min-w-0 flex flex-col justify-center">
+733 6 <h3 class="text-lg font-bold hover:text-blue-500 cursor-pointer" style="color: var(--text-main);">
+734 6 ${title}
+735 6 </h3>
+736 6 
+737 6 <div class="text-sm mt-1" style="color: var(--text-muted);">
+738 6 ${courseText} <span class="mx-1">&bull;</span> Dosen: ${teacherText}
+739 6 </div>
+740 6 
+741 6 <div class="text-sm mt-0.5" style="color: var(--text-muted); opacity: 0.8;">
+742 6 ${relTime}
+743 6 </div>
+744 6 
+745 6 ${docHtml}
+746 6 </div>
+747 6 </div>
+748 6 `;
+749 5 });
+750 5 columnHtml += '</div></div>';
+751 5 
+752 5 verticalFullListContainer.innerHTML = columnHtml;
+753 5 } catch (err) {
+754 5 console.error("Error in renderGalleryPage:", err);
+755 5 verticalFullListContainer.innerHTML = `<p style="color:red; text-align:center;">Terjadi kesalahan saat merender data galeri.</p>`;
+756 4 }
+757 4 
+758 5 if (totalPages > 1) {
+759 5 let pagerHtml = '<div style="text-align:center; margin-top:32px; display:flex; justify-content:center; align-items:center; gap:16px; margin-bottom:48px;">';
+760 5 if (cur > 1) pagerHtml += `<button class="btn-submit" onclick="renderGalleryPageWindow(${cur - 1}, '${type}')">&#9664; Prev</button>`;
+761 5 pagerHtml += ` <span style="font-weight:600; font-size:14px; color:var(--text-main);">Page ${cur} / ${totalPages}</span>`;
+762 5 if (cur < totalPages) pagerHtml += `<button class="btn-submit" onclick="renderGalleryPageWindow(${cur + 1}, '${type}')">Next &#9654;</button>`;
+763 5 pagerHtml += '</div>';
+764 5 verticalFullListContainer.innerHTML += pagerHtml;
+765 4 }
+766 3 }
+767 3 
+768 4 window.renderGalleryPageWindow = function (page, type) {
+769 4 const db = dbMap[type] || [];
+770 4 const gallery = buildGalleryItemsFrom(db, type);
+771 4 renderGalleryPage(gallery, page, type);
+772 4 window.scrollTo({ top: 0, behavior: 'smooth' });
+773 3 };
+774 3 
+775 3 const targetKConfig = config.find(c => c.id === kriteriaKey);
+776 4 if (targetKConfig) {
+777 4 targetKriteriaName.textContent = targetKConfig.label;
+778 4 const db = dbMap[kriteriaKey] || [];
+779 4 const gallery = buildGalleryItemsFrom(db, kriteriaKey);
+780 4 renderGalleryPage(gallery, 1, kriteriaKey);
+781 3 }
+782 2 };
+783 2 
+784 2 /* ========================================
+785 2 MODAL DETAIL ENGINE (NOW INLINE PANE)
+786 2 ======================================== */
+787 3 window.showParentDetail = function (parentIndex, type) {
+788 3 const currentDb = dbMap[type] || [];
+789 3 const entry = currentDb[parentIndex];
+790 3 if (!entry) return;
+791 3 
+792 3 paneMainGrid.classList.remove("active");
+793 3 paneSingleKriteria.classList.remove("active");
+794 3 paneDetailArtikel.classList.add("active");
+795 3 
+796 3 let photos = Array.isArray(entry.photo) ? entry.photo : (entry.photo ? [entry.photo] : []);
+797 3 photos = photos.map(getMediaPath).filter(Boolean);
+798 3 
+799 3 const thumbEdu = "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=150";
+800 3 const thumbRes = "https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=150";
+801 3 const thumbSrv = "https://images.unsplash.com/photo-1461532257341-81d394aec826?q=80&w=150";
+802 3 
+803 3 const defaultThumb = type === 'edu' ? thumbEdu : (type === 'res' ? thumbRes : (type === 'srv' ? thumbSrv : "https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=150"));
+804 3 const mainImg = photos.length ? photos[0] : defaultThumb;
+805 3 
+806 3 document.getElementById('detailArticleTitle').textContent = entry.title || 'Tanpa Judul';
+807 3 
+808 3 const configItem = config.find(c => c.id === type);
+809 3 const kLabel = configItem ? configItem.label : type;
+810 3 const courseText = entry.course || (entry.year ? `Tahun: ${entry.year}` : null) || kLabel;
+811 3 const teacherText = entry.teacher || entry.mitra || sysName;
+812 3 const relTime = getRelativeTime(entry.timestamp, entry.publishDate);
+813 3 
+814 3 document.getElementById('detailArticleMeta').textContent = `${courseText} ΓÇó ${teacherText} ΓÇó ${relTime}`;
+815 3 
+816 3 const mediaContainer = document.getElementById('detailArticleMediaContainer');
+817 4 if (mediaContainer) {
+818 5 if (photos.length > 1) {
+819 5 mediaContainer.innerHTML = window.buildSliderHtml(photos, `detail-${type}-${parentIndex}`);
+820 5 } else {
+821 5 mediaContainer.innerHTML = `<img src="${mainImg}" onerror="this.style.display='none'" class="w-full h-auto max-h-[500px] object-cover rounded-xl shadow-sm" alt="Foto">`;
+822 4 }
+823 3 }
+824 3 
+825 3 document.getElementById('detailArticleBrief').innerHTML = ''; // Not used in this version
+826 3 
+827 3 const descHtml = entry.desc ? linkify(entry.desc) : '<p style="color:var(--text-muted);">Deskripsi tidak tersedia.</p>';
+828 3 document.getElementById('detailArticleBody').innerHTML = descHtml;
+829 3 
+830 3 document.getElementById('detailArticleAttachments').innerHTML = renderAttachments(entry, parentIndex, type);
+831 3 document.getElementById('detailArticleReferences').innerHTML = renderReferences(entry);
+832 2 }; // <-- CLOSURE FIX FOR showParentDetail
+833 2 
+834 2 // Back Button Navigation
+835 3 window.goBackFromDetail = function () {
+836 4 if (currentViewContext === "all") {
+837 4 window.routeToEtalase();
+838 4 } else {
+839 4 window.routeToDetailKriteria(currentViewContext);
+840 3 }
+841 2 };
+842 2 
+843 3 function switchActiveTabIndicator(targetTabId) {
+844 3 document.querySelectorAll(".nav-tab-item").forEach(tab => tab.classList.remove("active"));
+845 3 const targetElement = document.getElementById(targetTabId);
+846 4 if (targetElement) {
+847 4 targetElement.classList.add("active");
+848 3 }
+849 2 }
+850 2 
+851 3 newsGlobalSearch.addEventListener("input", (e) => {
+852 3 const keyword = e.target.value.toLowerCase().trim();
+853 3 triggerLiveSearchFilter(keyword);
+854 2 });
+855 2 
+856 3 function triggerLiveSearchFilter(queryString) {
+857 3 const items = document.querySelectorAll(
+858 3 ".article-card, .article-item"
+859 3 );
+860 3 
+861 4 items.forEach(block => {
+862 5 if (block.textContent.toLowerCase().includes(queryString)) {
+863 5 block.style.display = block.classList.contains('article-card') ? "flex" : "block";
+864 5 } else {
+865 5 block.style.display = "none";
+866 4 }
+867 3 });
+868 2 }
+869 2 
+870 2 // Allow opening base64-attached files from the public site
+871 3 window.openBase64File = (index, type) => {
+872 3 const db = dbMap[type] || [];
+873 3 const dataItem = db[index];
+874 3 
+875 4 if (dataItem && dataItem.file) {
+876 4 const targetWindow = window.open();
+877 4 targetWindow.document.write(`<iframe src="${dataItem.file}" frameborder="0" style="border:0; position:fixed; top:0; left:0; width:100%; height:100%;" allowfullscreen></iframe>`);
+878 4 } else {
+879 4 alert("Gagal memuat berkas, file lampiran kosong.");
+880 3 }
+881 2 };
+882 2 
+883 2 // Initialize features
+884 2 renderGoogleNewsGrid();
+885 2 
+886 2 // Smooth scroll/appear: IntersectionObserver
+887 3 (function attachScrollObserver() {
+888 4 try {
+889 4 const selector = '.article-card, .article-item, .profile-premium-box';
+890 4 const els = Array.from(document.querySelectorAll(selector));
+891 4 if (!els.length) return;
+892 4 
+893 4 els.forEach(el => el.classList.add('animate-on-scroll'));
+894 4 
+895 5 const obs = new IntersectionObserver((entries, observer) => {
+896 6 entries.forEach(entry => {
+897 7 if (entry.isIntersecting) {
+898 7 entry.target.classList.add('in-view');
+899 7 observer.unobserve(entry.target);
+900 6 }
+901 5 });
+902 4 }, { threshold: 0.12 });
+903 4 
+904 4 els.forEach(el => obs.observe(el));
+905 3 } catch (e) { }
+906 2 })();
+907 1 });
+908 1 
+909 1 
+910 1 
+911 1 
+912 1 

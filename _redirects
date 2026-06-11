@@ -1,0 +1,6 @@
+# Netlify _redirects file
+# Format: FROM    TO    STATUS
+
+# Admin panel redirect
+/admin    /admin/index.html    200
+/admin/   /admin/index.html    200

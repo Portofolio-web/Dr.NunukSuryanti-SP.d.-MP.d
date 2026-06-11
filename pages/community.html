@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+  <link rel="stylesheet" href="../css/theme.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="Pengabdian Masyarakat - Portofolio Tri Dharma">
+  <title>Pengabdian Masyarakat - Portofolio Tri Dharma</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/style.css?v=11">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      corePlugins: {
+        preflight: false,
+      }
+    }
+  </script>
+  <style>
+    .service-item {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      padding: 24px;
+      margin: 16px auto;
+      max-width: 1000px;
+      background: var(--bg-card);
+      border-radius: 12px;
+      align-items: center;
+    }
+    
+    .service-item:nth-child(even) {
+      grid-template-columns: 1fr 1fr;
+      direction: rtl;
+    }
+    
+    .service-item:nth-child(even) > * {
+      direction: ltr;
+    }
+    
+    .service-image {
+      width: 100%;
+      height: 240px;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    
+    .service-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .service-content h3 {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: var(--text-main);
+    }
+    
+    .service-mitra {
+      font-size: 13px;
+      color: var(--accent-blue);
+      font-weight: 600;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .service-content p {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--text-main);
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 48px 24px;
+      color: var(--text-muted);
+    }
+    
+    .empty-state i {
+      font-size: 48px;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+    
+    @media (max-width: 768px) {
+      .service-item,
+      .service-item:nth-child(even) {
+        grid-template-columns: 1fr;
+        direction: ltr;
+      }
+      
+      .service-item:nth-child(even) > * {
+        direction: ltr;
+      }
+      
+      .service-image {
+        height: 200px;
+      }
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col">
+
+<header>
+  <div class="header-top-row">
+    <a href="../index.html" class="brand-logo-zone" id="brandName">
+      Nama Pemilik Website
+    </a>
+
+    <div class="center-search-pill">
+      <i class="ri-search-line"></i>
+      <input
+        type="text"
+        id="newsGlobalSearch"
+        class="pill-search-input"
+        placeholder="Cari program pengabdian..."
+      >
+    </div>
+
+    <div class="right-actions-zone">
+      <button id="themeToggleBtn" class="icon-btn">
+        <i id="themeIcon" class="ri-sun-line"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="header-tabs-row">
+    <a href="../index.html" class="nav-tab-item">Beranda</a>
+    <a href="profile.html" class="nav-tab-item">Profil</a>
+    <a href="education.html" class="nav-tab-item">Pendidikan</a>
+    <a href="research.html" class="nav-tab-item">Penelitian</a>
+    <a href="community.html" class="nav-tab-item active">Pengabdian</a>
+  </div>
+</header>
+
+<main class="google-news-workspace  flex-1">
+
+  <div class="section-title-area">
+    <h2>Program Pengabdian Masyarakat</h2>
+  </div>
+
+  <div id="serviceListContainer">
+    <div class="empty-state">
+      <i class="ri-team-line"></i>
+      <p>Belum ada program pengabdian masyarakat</p>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <div class="footer-links-row">
+    <a id="ftWA" href="#" target="_blank" class="footer-anchor">
+      <i class="ri-whatsapp-line"></i> WhatsApp
+    </a>
+
+    <a id="ftFB" href="#" target="_blank" class="footer-anchor">
+      <i class="ri-facebook-circle-line"></i> Facebook
+    </a>
+
+    <a id="ftEmail" href="#" class="footer-anchor">
+      <i class="ri-mail-open-line"></i> E-Mail
+    </a>
+  </div>
+
+  <div class="copyright-text" id="copyrightText">
+    © 2026 Google News Style Portfolio System.
+  </div>
+</footer>
+
+<script src="../firebase/firebase-config.js"></script>
+<script src="../js/app.js"></script>
+<script src="../js/theme.js"></script>
+<script src="../js/profile.js"></script>
+<script src="../js/firebase.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const dbSrv = JSON.parse(localStorage.getItem("db_srv_v5")) || [];
+  const container = document.getElementById("serviceListContainer");
+  
+  const thumbSrv = "https://images.unsplash.com/photo-1461532257341-81d394aec826?q=80&w=150";
+  
+  if (dbSrv.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <i class="ri-team-line"></i>
+        <p>Belum ada program pengabdian masyarakat</p>
+      </div>
+    `;
+  } else {
+    let html = "";
+    dbSrv.forEach((item, idx) => {
+      const photo = Array.isArray(item.photo) ? item.photo[0] : item.photo || "";
+      const hasRealPhoto = item.hasCustomPhoto || (
+        photo && 
+        photo !== thumbSrv &&
+        !photo.includes("photo-") && 
+        !photo.includes("unsplash.com")
+      );
+      const mediaHtml = hasRealPhoto ? `
+        <div class="service-image">
+          <img src="${photo}" alt="${item.title}">
+        </div>
+      ` : '';
+      html += `
+        <div class="service-item animate-on-scroll">
+          ${mediaHtml}
+          <div class="service-content">
+            <div class="service-mitra">
+              <i class="ri-organisation-line"></i> ${item.mitra || 'Mitra Kerja'}
+            </div>
+            <h3>${item.title}</h3>
+            <p>${item.desc || 'Deskripsi tidak tersedia'}</p>
+            <div style="margin-top: 12px; font-size: 13px; color: var(--text-muted);">
+              📅 ${item.publishDate || 'Tanggal tidak tersedia'}
+            </div>
+          </div>
+        </div>
+      `;
+    });
+    container.innerHTML = html;
+  }
+  
+  // Search functionality
+  document.getElementById("newsGlobalSearch").addEventListener("input", (e) => {
+    const query = e.target.value.toLowerCase();
+    const items = container.querySelectorAll(".service-item");
+    
+    items.forEach(item => {
+      const text = item.textContent.toLowerCase();
+      item.style.display = text.includes(query) ? "grid" : "none";
+    });
+  });
+});
+</script>
+
+</body>
+</html>

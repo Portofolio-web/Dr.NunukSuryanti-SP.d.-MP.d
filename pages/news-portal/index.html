@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="../../css/theme.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TriDharma News Portal</title>
+  <link rel="stylesheet" href="./style.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      corePlugins: {
+        preflight: false,
+      }
+    }
+  </script>
+</head>
+<body class="min-h-screen flex flex-col">
+  <header class="site-header">
+    <div class="brand-row">
+      <a class="brand" href="./index.html">TriDharma News</a>
+      <button id="themeToggle" class="theme-toggle" aria-label="Toggle dark mode">Dark</button>
+    </div>
+    <nav class="main-nav" aria-label="Main navigation">
+      <a href="./index.html" class="active">Headlines</a>
+      <a href="../research.html">Research</a>
+      <a href="../education.html">Education</a>
+      <a href="../community.html">Community</a>
+      <a href="admin/">Dashboard</a>
+    </nav>
+  </header>
+
+  <section class="hero-panel">
+    <div class="hero-copy">
+      <span class="eyebrow">Institutional Portal</span>
+      <h1>News, updates, and research stories for our community.</h1>
+      <p>Stay informed with curated reports, featured insights, and campus highlights in a modern, adaptive publication layout.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#top-stories">Top Stories</a>
+        <a class="btn btn-secondary" href="admin/">Open Dashboard</a>
+      </div>
+    </div>
+    <div class="hero-featured" id="top-stories" aria-label="Featured story">
+      <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80" alt="Campus research update" />
+      <div class="hero-featured-copy">
+        <span class="eyebrow">Featured</span>
+        <h2>Campus AI Lab publishes open access research on sustainability.</h2>
+        <p>Read how interdisciplinary teams are applying machine learning to solar energy, policy, and community resilience.</p>
+      </div>
+    </div>
+  </section>
+
+  <main class="page-grid  flex-1">
+    <section class="news-section">
+      <div class="section-header">
+        <div>
+          <span class="eyebrow">Latest Updates</span>
+          <h2>Fresh coverage from campus, events, and student research.</h2>
+        </div>
+        <p class="section-meta">Browse featured stories, analysis, and quick reads arranged for fast discovery.</p>
+      </div>
+
+      <div id="newsGrid" class="news-grid"></div>
+
+      <nav class="pagination" aria-label="Pagination">
+        <button id="prevPage" disabled>Previous</button>
+        <div id="paginationNumbers" class="pagination-numbers"></div>
+        <button id="nextPage">Next</button>
+      </nav>
+    </section>
+
+    <aside class="sidebar">
+      <div class="sidebar-card sticky-card">
+        <span class="eyebrow">Popular Reads</span>
+        <h3>Top stories right now</h3>
+        <ul id="popularList" class="popular-list"></ul>
+      </div>
+
+      <div class="sidebar-card">
+        <span class="eyebrow">Editorial note</span>
+        <h3>Portal design goals</h3>
+        <p>This layout is built for scalable article discovery, clean metadata, and consistent reading on desktop and mobile.</p>
+        <a class="link-button" href="admin/">Manage stories</a>
+      </div>
+    </aside>
+  </main>
+
+  <footer class="site-footer">
+    <p>© 2026 TriDharma News Portal. Designed for modern academic publications.</p>
+  </footer>
+
+  <script src="./script.js"></script>
+</body>
+</html>
+
+
+
+
+

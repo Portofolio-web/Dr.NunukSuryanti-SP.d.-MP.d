@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <link rel="stylesheet" href="../css/theme.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Halaman Rincian</title>
+  <link rel="stylesheet" href="../detail-style.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      corePlugins: {
+        preflight: false,
+      }
+    }
+  </script>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- Theme Toggle Button -->
+  <button id="themeToggleBtn" class="theme-toggle-btn" aria-label="Toggle Dark Mode">
+    <svg id="sunIcon" class="theme-icon sun-icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+
+    <svg id="moonIcon" class="theme-icon moon-icon hidden" viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+    </svg>
+  </button>
+
+  <!-- Main Content Container -->
+  <main class="detail-container  flex-1">
+
+    <!-- Header Section -->
+    <header class="detail-header">
+      <h1 class="detail-title">Judul Rincian</h1>
+      <div class="detail-metadata">
+        <span class="detail-date">30 Mei 2026</span>
+        <span class="detail-separator">•</span>
+        <span class="detail-category">Kategori</span>
+      </div>
+    </header>
+
+    <!-- Figure Section with Image -->
+    <figure class="detail-figure">
+      <img 
+        src="https://images.unsplash.com/photo-1620712014215-c8e73f5b9b4b?q=80&w=1200&h=675&fit=crop" 
+        alt="Gambar Rincian"
+        class="detail-image"
+      >
+      <figcaption class="detail-figcaption">Deskripsi gambar halaman rincian</figcaption>
+    </figure>
+
+    <!-- Article Section (Empty Template) -->
+    <article class="detail-article">
+      <!-- Konten akan diisi di sini -->
+    </article>
+
+  </main>
+
+  <script src="../detail-script.js"></script>
+</body>
+</html>
+
+
+
+

@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+  <link rel="stylesheet" href="../css/theme.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="Kontak - Portofolio Tri Dharma">
+  <title>Kontak - Portofolio Tri Dharma</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/style.css?v=11">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      corePlugins: {
+        preflight: false,
+      }
+    }
+  </script>
+  <style>
+    .contact-container {
+      max-width: 900px;
+      margin: 32px auto;
+      padding: 0 16px;
+    }
+    
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      margin-bottom: 48px;
+    }
+    
+    .contact-card {
+      background: var(--bg-card);
+      padding: 32px 24px;
+      border-radius: 12px;
+      text-align: center;
+      transition: transform 0.2s;
+    }
+    
+    .contact-card:hover {
+      transform: translateY(-4px);
+    }
+    
+    .contact-icon {
+      font-size: 48px;
+      color: var(--accent-blue);
+      margin-bottom: 16px;
+    }
+    
+    .contact-card h3 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: var(--text-main);
+    }
+    
+    .contact-card p {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      word-break: break-all;
+    }
+    
+    .contact-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      background: var(--accent-blue);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: opacity 0.2s;
+    }
+    
+    .contact-btn:hover {
+      opacity: 0.8;
+    }
+    
+    .contact-form-section {
+      background: var(--bg-card);
+      padding: 32px;
+      border-radius: 12px;
+      margin-top: 32px;
+    }
+    
+    .contact-form-section h3 {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 24px;
+      color: var(--text-main);
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+    
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 12px;
+      background: var(--bg-main);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 14px;
+    }
+    
+    .form-group textarea {
+      resize: vertical;
+      min-height: 120px;
+    }
+    
+    .form-group input:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--accent-blue);
+    }
+    
+    .submit-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      background: var(--accent-blue);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: opacity 0.2s;
+    }
+    
+    .submit-btn:hover {
+      opacity: 0.8;
+    }
+    
+    .submit-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col">
+
+<header>
+  <div class="header-top-row">
+    <a href="../index.html" class="brand-logo-zone" id="brandName">
+      Nama Pemilik Website
+    </a>
+
+    <div class="center-search-pill">
+      <i class="ri-search-line"></i>
+      <input
+        type="text"
+        id="newsGlobalSearch"
+        class="pill-search-input"
+        placeholder="Telusuri..."
+      >
+    </div>
+
+    <div class="right-actions-zone">
+      <button id="themeToggleBtn" class="icon-btn">
+        <i id="themeIcon" class="ri-sun-line"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="header-tabs-row">
+    <a href="../index.html" class="nav-tab-item">Beranda</a>
+    <a href="profile.html" class="nav-tab-item">Profil</a>
+    <a href="education.html" class="nav-tab-item">Pendidikan</a>
+    <a href="research.html" class="nav-tab-item">Penelitian</a>
+    <a href="community.html" class="nav-tab-item">Pengabdian</a>
+    <a href="contact.html" class="nav-tab-item active">Kontak</a>
+  </div>
+</header>
+
+<main class="google-news-workspace  flex-1">
+
+  <div class="section-title-area">
+    <h2>Hubungi Saya</h2>
+  </div>
+
+  <div class="contact-container">
+    
+    <div class="contact-grid" id="contactCardsContainer">
+      <!-- Contact cards will be inserted here -->
+    </div>
+
+    <div class="contact-form-section">
+      <h3>Formulir Kontak</h3>
+      <form id="contactForm">
+        <div class="form-group">
+          <label for="contactName">Nama Lengkap</label>
+          <input 
+            type="text" 
+            id="contactName" 
+            name="name" 
+            placeholder="Nama Anda" 
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="contactEmail">Email</label>
+          <input 
+            type="email" 
+            id="contactEmail" 
+            name="email" 
+            placeholder="email@example.com" 
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="contactPhone">Nomor Telepon</label>
+          <input 
+            type="tel" 
+            id="contactPhone" 
+            name="phone" 
+            placeholder="+62 812 3456 7890"
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="contactSubject">Subjek</label>
+          <input 
+            type="text" 
+            id="contactSubject" 
+            name="subject" 
+            placeholder="Subjek pesan Anda" 
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="contactMessage">Pesan</label>
+          <textarea 
+            id="contactMessage" 
+            name="message" 
+            placeholder="Tulis pesan Anda di sini..." 
+            required
+          ></textarea>
+        </div>
+
+        <button type="submit" class="submit-btn">
+          <i class="ri-send-plane-line"></i> Kirim Pesan
+        </button>
+      </form>
+    </div>
+
+  </div>
+
+</main>
+
+<footer>
+  <div class="footer-links-row">
+    <a id="ftWA" href="#" target="_blank" class="footer-anchor">
+      <i class="ri-whatsapp-line"></i> WhatsApp
+    </a>
+
+    <a id="ftFB" href="#" target="_blank" class="footer-anchor">
+      <i class="ri-facebook-circle-line"></i> Facebook
+    </a>
+
+    <a id="ftEmail" href="#" class="footer-anchor">
+      <i class="ri-mail-open-line"></i> E-Mail
+    </a>
+  </div>
+
+  <div class="copyright-text" id="copyrightText">
+    © 2026 Google News Style Portfolio System.
+  </div>
+</footer>
+
+<script src="../firebase/firebase-config.js"></script>
+<script src="../js/app.js"></script>
+<script src="../js/theme.js"></script>
+<script src="../js/profile.js"></script>
+<script src="../js/firebase.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const profileData = loadProfileData();
+  const cardsContainer = document.getElementById("contactCardsContainer");
+  const contactForm = document.getElementById("contactForm");
+  
+  // Render contact cards
+  let html = "";
+  
+  if (profileData.wa) {
+    html += `
+      <div class="contact-card animate-on-scroll">
+        <div class="contact-icon">
+          <i class="ri-whatsapp-line"></i>
+        </div>
+        <h3>WhatsApp</h3>
+        <p>${profileData.wa}</p>
+        <button type="button" class="contact-btn" id="waBtn">
+          <i class="ri-whatsapp-line"></i> Hubungi
+        </button>
+      </div>
+    `;
+  }
+  
+  if (profileData.fb) {
+    html += `
+      <div class="contact-card animate-on-scroll">
+        <div class="contact-icon">
+          <i class="ri-facebook-circle-line"></i>
+        </div>
+        <h3>Facebook</h3>
+        <p>${profileData.fb}</p>
+        <button type="button" class="contact-btn" id="fbBtn">
+          <i class="ri-facebook-circle-line"></i> Kunjungi
+        </button>
+      </div>
+    `;
+  }
+  
+  if (profileData.email) {
+    html += `
+      <div class="contact-card animate-on-scroll">
+        <div class="contact-icon">
+          <i class="ri-mail-open-line"></i>
+        </div>
+        <h3>Email</h3>
+        <p>${profileData.email}</p>
+        <button type="button" class="contact-btn" id="emailBtn">
+          <i class="ri-mail-open-line"></i> Kirim Email
+        </button>
+      </div>
+    `;
+  }
+  
+  if (html === "") {
+    html = `
+      <div class="contact-card animate-on-scroll" style="grid-column: 1 / -1; text-align: center; color: var(--text-muted);">
+        <i class="ri-phone-off-line" style="font-size: 48px; opacity: 0.5;"></i>
+        <p>Informasi kontak belum tersedia</p>
+      </div>
+    `;
+  }
+  
+  cardsContainer.innerHTML = html;
+  
+  // Setup button handlers
+  if (document.getElementById("waBtn")) {
+    document.getElementById("waBtn").onclick = () => {
+      const wa = profileData.wa;
+      let waHref = wa;
+      const digits = wa.replace(/[^\d\+]/g, '');
+      if(/^\+?\d{6,}$/.test(digits)) waHref = 'https://wa.me/' + digits.replace(/^\+/, '');
+      else if(!/^https?:\/\//i.test(waHref)) waHref = 'https://' + waHref;
+      window.open(waHref, '_blank');
+    };
+  }
+  
+  if (document.getElementById("fbBtn")) {
+    document.getElementById("fbBtn").onclick = () => {
+      const fb = profileData.fb;
+      let fbHref = fb;
+      if(!/^https?:\/\//i.test(fbHref)) fbHref = 'https://facebook.com/' + fbHref.replace(/^@/, '');
+      window.open(fbHref, '_blank');
+    };
+  }
+  
+  if (document.getElementById("emailBtn")) {
+    document.getElementById("emailBtn").onclick = () => {
+      window.open("mailto:" + profileData.email, '_blank');
+    };
+  }
+  
+  // Handle form submission
+  contactForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    
+    const formData = {
+      name: document.getElementById("contactName").value,
+      email: document.getElementById("contactEmail").value,
+      phone: document.getElementById("contactPhone").value,
+      subject: document.getElementById("contactSubject").value,
+      message: document.getElementById("contactMessage").value,
+      timestamp: new Date().toISOString()
+    };
+    
+    // Save to localStorage (in a real app, this would be sent to a server)
+    let messages = JSON.parse(localStorage.getItem("contact_messages") || "[]");
+    messages.push(formData);
+    localStorage.setItem("contact_messages", JSON.stringify(messages));
+    
+    Toast.success("Pesan Anda telah terkirim! Terima kasih telah menghubungi.");
+    contactForm.reset();
+  });
+  
+  // Search functionality
+  document.getElementById("newsGlobalSearch").addEventListener("input", (e) => {
+    alert("Pencarian akan diarahkan ke halaman utama");
+  });
+});
+</script>
+
+</body>
+</html>
+
+
+
+
+
+

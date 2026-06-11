@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+  <link rel="stylesheet" href="../css/theme.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="Pendidikan - Portofolio Tri Dharma">
+  <title>Pendidikan - Portofolio Tri Dharma</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/style.css?v=11">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      corePlugins: {
+        preflight: false,
+      }
+    }
+  </script>
+  <style>
+    .list-view-container {
+      max-width: 900px;
+      margin: 24px auto;
+      padding: 0 16px;
+    }
+
+    /* Education Card Grid - Image (16:9) + Content */
+    .edu-item {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 16px;
+      align-items: stretch;
+      padding: 0;
+      margin-bottom: 16px;
+      background: var(--bg-card);
+      border-radius: 16px;
+      border: 1px solid var(--border-color);
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: var(--shadow-light);
+    }
+
+    .edu-item:hover {
+      border-color: var(--accent-blue);
+    }
+
+    /* Image Container - 16:9 Aspect Ratio */
+    .edu-item-image {
+      width: 200px;
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      background: var(--bg-main);
+      flex-shrink: 0;
+    }
+
+    .edu-item-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* Content Container */
+    .edu-item-content {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 20px 24px;
+      gap: 8px;
+    }
+    
+    .edu-item-meta {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent-blue);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+    
+    .edu-item-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-main);
+      line-height: 1.3;
+      margin-bottom: 8px;
+    }
+    
+    .edu-item-desc {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+
+    .edu-item-date {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 48px 24px;
+      color: var(--text-muted);
+    }
+    
+    .empty-state i {
+      font-size: 48px;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+      .edu-item {
+        grid-template-columns: 1fr;
+        gap: 0;
+        margin-bottom: 12px;
+      }
+
+      .edu-item-image {
+        width: 100%;
+        aspect-ratio: 16 / 9;
+      }
+
+      .edu-item-content {
+        padding: 16px;
+      }
+
+      .edu-item-title {
+        font-size: 16px;
+      }
+
+      .edu-item-desc {
+        font-size: 13px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .list-view-container {
+        padding: 0 12px;
+      }
+
+      .edu-item {
+        margin-bottom: 10px;
+        border-radius: 12px;
+      }
+
+      .edu-item-content {
+        padding: 14px;
+        gap: 6px;
+      }
+
+      .edu-item-title {
+        font-size: 15px;
+      }
+
+      .edu-item-meta {
+        font-size: 11px;
+      }
+    }
+    /* Full-bleed variant for special items (e.g., 3rd item) */
+    .edu-item.full-bleed {
+      grid-template-columns: 1fr;
+      border-radius: 12px;
+    }
+
+    .edu-item.full-bleed .edu-item-image {
+      width: 100%;
+      aspect-ratio: 16 / 6;
+      grid-column: 1 / -1;
+    }
+
+    .edu-item.full-bleed .edu-item-content {
+      padding: 18px 24px;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col">
+
+<header>
+  <div class="header-top-row">
+    <a href="../index.html" class="brand-logo-zone" id="brandName">
+      Nama Pemilik Website
+    </a>
+
+    <div class="center-search-pill">
+      <i class="ri-search-line"></i>
+      <input
+        type="text"
+        id="newsGlobalSearch"
+        class="pill-search-input"
+        placeholder="Cari dokumen pendidikan..."
+      >
+    </div>
+
+    <div class="right-actions-zone">
+      <button id="themeToggleBtn" class="icon-btn">
+        <i id="themeIcon" class="ri-sun-line"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="header-tabs-row">
+    <a href="../index.html" class="nav-tab-item">Beranda</a>
+    <a href="profile.html" class="nav-tab-item">Profil</a>
+    <a href="education.html" class="nav-tab-item active">Pendidikan</a>
+    <a href="research.html" class="nav-tab-item">Penelitian</a>
+    <a href="community.html" class="nav-tab-item">Pengabdian</a>
+  </div>
+</header>
+
+<main class="google-news-workspace  flex-1">
+
+  <div class="section-title-area">
+    <h2>Dokumen Pendidikan</h2>
+  </div>
+
+  <div class="list-view-container" id="eduListContainer">
+    <div class="empty-state">
+      <i class="ri-book-line"></i>
+      <p>Belum ada dokumen pendidikan</p>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <div class="footer-links-row">
+    <a id="ftWA" href="#" target="_blank" class="footer-anchor">
+      <i class="ri-whatsapp-line"></i> WhatsApp
+    </a>
+
+    <a id="ftFB" href="#" target="_blank" class="footer-anchor">
+      <i class="ri-facebook-circle-line"></i> Facebook
+    </a>
+
+    <a id="ftEmail" href="#" class="footer-anchor">
+      <i class="ri-mail-open-line"></i> E-Mail
+    </a>
+  </div>
+
+  <div class="copyright-text" id="copyrightText">
+    © 2026 Google News Style Portfolio System.
+  </div>
+</footer>
+
+<script src="../firebase/firebase-config.js"></script>
+<script src="../js/app.js"></script>
+<script src="../js/theme.js"></script>
+<script src="../js/profile.js"></script>
+<script src="../js/firebase.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const dbEdu = JSON.parse(localStorage.getItem("db_edu_v5")) || [];
+  const container = document.getElementById("eduListContainer");
+  
+  const thumbEdu = "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=150";
+  
+  function getEduId(item, idx) {
+    // Try common ID/slug fields (depends on your admin data format)
+    return item.id ?? item.docId ?? item.slug ?? item._id ?? String(idx);
+  }
+  
+  function sanitizeForUrl(v) {
+    return encodeURIComponent(String(v).trim());
+  }
+  
+  const emptyStateTemplate = (message) => `
+    <div class="empty-state" id="eduEmptyState">
+      <i class="ri-book-line"></i>
+      <p>${message}</p>
+    </div>
+  `;
+
+  if (dbEdu.length === 0) {
+    container.innerHTML = emptyStateTemplate('Belum ada dokumen pendidikan');
+  } else {
+    let html = "";
+    dbEdu.forEach((item, idx) => {
+      const photo = Array.isArray(item.photo) ? item.photo[0] : item.photo || "";
+      const hasRealPhoto = item.hasCustomPhoto || (
+        photo && 
+        photo !== thumbEdu &&
+        !photo.includes("photo-") && 
+        !photo.includes("unsplash.com")
+      );
+      const mediaHtml = hasRealPhoto ? `
+        <div class="edu-item-image${idx === 2 ? ' full-bleed' : ''}">
+          <img src="${photo}" alt="${item.title}">
+        </div>
+      ` : '';
+      const eduId = getEduId(item, idx);
+
+      html += `
+        <div class="card edu-item animate-on-scroll${(idx === 2 && hasRealPhoto) ? ' full-bleed' : ''}" role="button" tabindex="0" data-edu-id="${sanitizeForUrl(eduId)}">
+          ${mediaHtml}
+          <div class="edu-item-content">
+            <div class="edu-item-meta">PENDIDIKAN</div>
+            <div class="edu-item-title">${item.title}</div>
+            <div class="edu-item-desc">${item.desc || 'Deskripsi tidak tersedia'}</div>
+            <div class="edu-item-date">
+              <i class="ri-calendar-line" style="margin-right: 6px;"></i>${item.publishDate || item.date || 'Baru'}
+            </div>
+          </div>
+        </div>
+      `;
+    });
+    container.innerHTML = html;
+  }
+
+  function navigateToDetail(eduId) {
+    // Use query param so pages/detail/index.html can read it.
+    // If you later add slug-based paths, just change this function.
+    const url = `detail/?type=edu&id=${sanitizeForUrl(eduId)}`;
+    window.location.href = url;
+  }
+
+  // Click to open detail page
+  function bindItemClicks() {
+    const items = container.querySelectorAll('.edu-item[data-edu-id]');
+    items.forEach((el) => {
+      const eduId = el.getAttribute('data-edu-id');
+      el.addEventListener('click', () => navigateToDetail(eduId));
+      el.addEventListener('keydown', (ev) => {
+        if (ev.key === 'Enter' || ev.key === ' ') {
+          ev.preventDefault();
+          navigateToDetail(eduId);
+        }
+      });
+    });
+  }
+  bindItemClicks();
+
+  // Search functionality (with empty-state for filtered results)
+  const searchInput = document.getElementById("newsGlobalSearch");
+  searchInput.addEventListener("input", (e) => {
+    const query = e.target.value.toLowerCase().trim();
+    const items = Array.from(container.querySelectorAll(".edu-item"));
+
+    // Remove any previous filtered empty-state
+    const prevEmpty = container.querySelector('#eduEmptyState');
+    if (prevEmpty) prevEmpty.remove();
+
+    if (query.length === 0) {
+      items.forEach(item => (item.style.display = 'grid'));
+      return;
+    }
+
+    let visibleCount = 0;
+    items.forEach(item => {
+      const text = item.textContent.toLowerCase();
+      const show = text.includes(query);
+      item.style.display = show ? 'grid' : 'none';
+      if (show) visibleCount++;
+    });
+
+    if (visibleCount === 0) {
+      container.insertAdjacentHTML('afterbegin', emptyStateTemplate(`Tidak ada hasil untuk "${e.target.value}"`));
+    }
+  });
+});
+</script>
+
+</body>
+</html>
+
+
+
+
+
+

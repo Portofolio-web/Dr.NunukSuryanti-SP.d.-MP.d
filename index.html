@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <link rel="stylesheet" href="./css/theme.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="Portofolio Tri Dharma - Platform Pendidikan, Penelitian, dan Pengabdian">
+  <title>Portofolio Tri Dharma - Nama Pemilik Website</title>
+  
+  <script>
+    // Apply saved theme early to avoid flash
+    (function(){
+      try {
+        const saved = localStorage.getItem('site_theme');
+        if (saved) document.documentElement.setAttribute('data-theme', saved);
+      } catch(e) { /* ignore */ }
+    })();
+  </script>
+
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css?v=14">
+  
+  <script src="js/theme.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      corePlugins: {
+        preflight: false,
+      }
+    }
+  </script>
+  <style>
+    /* Dark mode: frosted glass header & footer */
+    html[data-theme="dark"] header {
+      background: rgba(11, 15, 23, 0.82) !important;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+    }
+    html[data-theme="dark"] footer {
+      background: rgba(11, 15, 23, 0.85) !important;
+      border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+    }
+    html[data-theme="dark"] .brand-logo-zone {
+      color: #ffffff !important;
+    }
+    /* Dark mode text colors for profile */
+    html[data-theme="dark"] #profileOwnerName,
+    html[data-theme="dark"] #profileBioText {
+      color: #ffffff !important;
+    }
+    html[data-theme="dark"] #profileDegreeTitle {
+      color: #3b82f6 !important; /* Biru di tema dark */
+    }
+    #profileDegreeTitle {
+      color: #2563eb !important; /* Biru di tema light/white */
+    }
+  </style>
+  <style>
+    /* Animasi Eksklusif untuk Teks Profil Utama */
+    #profileOwnerName, #profileDegreeTitle {
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.27) !important;
+      transform-origin: left center !important;
+      display: inline-block !important; /* Wajib agar bisa bergeser */
+    }
+    
+    #profileOwnerName:hover {
+      transform: scale(1.03) translateX(8px) !important;
+      text-shadow: 0 4px 10px rgba(0,0,0,0.1) !important;
+      color: #3b82f6 !important; /* Menyala biru elegan saat disentuh */
+    }
+
+    #profileDegreeTitle:hover {
+      transform: scale(1.02) translateX(6px) !important;
+      opacity: 0.8 !important;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="header-top-row">
+
+    <a href="#" class="brand-logo-zone" id="brandName" onclick="routeToEtalase()">
+      Nama Pemilik Website
+    </a>
+
+    <div class="center-search-pill">
+      <i class="ri-search-line"></i>
+      <input
+        type="text"
+        id="newsGlobalSearch"
+        class="pill-search-input"
+        placeholder="Telusuri topik, judul dokumen, atau kata kunci..."
+      >
+    </div>
+
+    <div class="right-actions-zone">
+      <button id="themeToggleBtn" class="icon-btn">
+        <i id="themeIcon" class="ri-moon-line"></i>
+      </button>
+    </div>
+
+  </div>
+
+    <div class="header-tabs-row" id="headerTabsContainer">
+    <span id="tab-all" class="nav-tab-item active" onclick="routeToEtalase()">Beranda</span>
+    <span id="tab-edu" class="nav-tab-item" onclick="routeToDetailKriteria('edu')">Pendidikan</span>
+    <span id="tab-res" class="nav-tab-item" onclick="routeToDetailKriteria('res')">Penelitian</span>
+    <span id="tab-srv" class="nav-tab-item" onclick="routeToDetailKriteria('srv')">Pengabdian</span>
+  </div>
+</header>
+
+<main class="google-news-workspace">
+
+  <div id="pane-main-grid" class="content-pane active">
+
+    <!-- Profile Skeleton Loading (Shimmer) -->
+    <div id="profileSkeleton">
+      <div class="sk-avatar-block skeleton" style="border-radius: 50% !important;"></div>
+      <div class="sk-text-group">
+        <div class="sk-name-line skeleton"></div>
+        <div class="sk-degree-line skeleton"></div>
+        <div class="sk-bio-line skeleton" style="width: 100%;"></div>
+        <div class="sk-bio-line skeleton" style="width: 80%; margin-top: 8px;"></div>
+      </div>
+    </div>
+
+    <div id="profileContentWrap" class="max-w-5xl mx-auto px-6 py-16 flex flex-col md:flex-row items-center md:items-start gap-8 md:gap-12" style="display: none;">
+      <!-- Profile Image -->
+      <img 
+        id="mainProfileImg"
+        src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400" 
+        alt="Foto Pemilik" 
+        class="w-64 h-64 md:w-80 md:h-80 object-cover rounded-[2rem] flex-shrink-0" 
+      />
+      
+      <!-- Text Container -->
+      <div class="flex flex-col">
+        <!-- Name -->
+        <h2 id="profileOwnerName" class="text-4xl md:text-[3.5rem] font-extrabold text-slate-900 tracking-tight leading-none mb-3">
+          Loading Profil Pemilik...
+        </h2>
+        
+        <!-- Degree/Title -->
+        <h3 id="profileDegreeTitle" class="text-xl md:text-2xl font-medium text-slate-500 mb-6">
+          Doktor Pendidikan Akuntansi
+        </h3>
+        
+        <!-- Description -->
+        <p id="profileBioText" class="text-base md:text-lg text-slate-600 leading-relaxed max-w-2xl">
+          Selamat datang di platform Website Pribadi saya
+        </p>
+      </div>
+    </div>
+
+    <div class="section-title-area">
+      <h2>Beranda</h2>
+    </div>
+
+    <div id="dynamicNewsGrid" class="news-grid-columns">
+      <!-- Skeleton Pendidikan -->
+      <div class="sk-card-col">
+        <div class="sk-card-header skeleton"></div>
+        <div class="sk-card-item">
+          <div class="sk-item-lines">
+            <div class="sk-item-title skeleton" style="width: 80%;"></div>
+            <div class="sk-item-sub skeleton" style="width: 50%;"></div>
+          </div>
+          <div class="sk-item-thumb skeleton"></div>
+        </div>
+        <div class="sk-card-item">
+          <div class="sk-item-lines">
+            <div class="sk-item-title skeleton" style="width: 70%;"></div>
+            <div class="sk-item-sub skeleton" style="width: 45%;"></div>
+          </div>
+          <div class="sk-item-thumb skeleton"></div>
+        </div>
+        <div class="sk-card-item">
+          <div class="sk-item-lines">
+            <div class="sk-item-title skeleton" style="width: 90%;"></div>
+            <div class="sk-item-sub skeleton" style="width: 60%;"></div>
+          </div>
+          <div class="sk-item-thumb skeleton"></div>
+        </div>
+      </div>
+      <!-- Skeleton Penelitian -->
+      <div class="sk-card-col">
+        <div class="sk-card-header skeleton"></div>
+        <div class="sk-card-item">
+          <div class="sk-item-lines">
+            <div class="sk-item-title skeleton" style="width: 85%;"></div>
+            <div class="sk-item-sub skeleton" style="width: 55%;"></div>
+          </div>
+          <div class="sk-item-thumb skeleton"></div>
+        </div>
+        <div class="sk-card-item">
+          <div class="sk-item-lines">
+            <div class="sk-item-title skeleton" style="width: 75%;"></div>
+            <div class="sk-item-sub skeleton" style="width: 40%;"></div>
+          </div>
+          <div class="sk-item-thumb skeleton"></div>
+        </div>
+        <div class="sk-card-item">
+          <div class="sk-item-lines">
+            <div class="sk-item-title skeleton" style="width: 80%;"></div>
+            <div class="sk-item-sub skeleton" style="width: 50%;"></div>
+          </div>
+          <div class="sk-item-thumb skeleton"></div>
+        </div>
+      </div>
+      <!-- Skeleton Pengabdian -->
+      <div class="sk-card-col">
+        <div class="sk-card-header skeleton"></div>
+        <div class="sk-card-item">
+          <div class="sk-item-lines">
+            <div class="sk-item-title skeleton" style="width: 75%;"></div>
+            <div class="sk-item-sub skeleton" style="width: 45%;"></div>
+          </div>
+          <div class="sk-item-thumb skeleton"></div>
+        </div>
+        <div class="sk-card-item">
+          <div class="sk-item-lines">
+            <div class="sk-item-title skeleton" style="width: 90%;"></div>
+            <div class="sk-item-sub skeleton" style="width: 60%;"></div>
+          </div>
+          <div class="sk-item-thumb skeleton"></div>
+        </div>
+        <div class="sk-card-item">
+          <div class="sk-item-lines">
+            <div class="sk-item-title skeleton" style="width: 65%;"></div>
+            <div class="sk-item-sub skeleton" style="width: 35%;"></div>
+          </div>
+          <div class="sk-item-thumb skeleton"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div id="pane-single-kriteria" class="content-pane">
+    <div class="section-title-area">
+      <h2 id="targetKriteriaName"></h2>
+    </div>
+
+    <div id="verticalFullListContainer" class="vertical-full-list"></div>
+  </div>
+
+  <div id="pane-detail-artikel" class="content-pane">
+    <button class="btn-back-home" onclick="goBackFromDetail()">Kembali</button>
+    <div class="detail-layout-container">
+      <div class="detail-article-wrapper">
+        <h1 id="detailArticleTitle">Judul Artikel</h1>
+        <div id="detailArticleMeta" class="meta">
+            Mata Kuliah • Nama Dosen • Waktu Relatif
+        </div>
+        <div id="detailArticleMediaContainer" class="detail-media-carousel flex overflow-x-auto snap-x snap-mandatory gap-4 scroll-smooth hide-scrollbar">
+          <!-- Images injected by JS -->
+        </div>
+        <div id="detailArticleBrief" class="description">Deskripsi singkat...</div>
+        <article id="detailArticleBody" class="article-content">Isi artikel...</article>
+        <section id="detailArticleAttachments" class="attachments"></section>
+        <section id="detailArticleReferences" class="references"></section>
+        <section id="detailArticleRelated" class="related-posts"></section>
+      </div>
+      <aside class="detail-sidebar" id="detailArticleSidebar"></aside>
+    </div>
+  </div>
+
+</main>
+
+  <footer id="siteFooter" style="padding: 40px 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; box-sizing: border-box; position: relative; z-index: 10;">
+  <div style="display: flex; gap: 32px; margin-bottom: 16px; justify-content: center; align-items: center;">
+    <a id="ftWA" href="#" target="_blank" style="color: rgba(50,50,80,0.75); font-size: 26px; text-decoration: none; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: inline-block;" onmouseover="this.style.color='#2563eb'; this.style.transform='translateY(-6px) scale(1.15)'; this.style.filter='drop-shadow(0 8px 12px rgba(37,99,235,0.35))'" onmouseout="this.style.color='rgba(50,50,80,0.75)'; this.style.transform='translateY(0) scale(1)'; this.style.filter='none'">
+      <i class="ri-whatsapp-line"></i>
+    </a>
+    <a id="ftFB" href="#" target="_blank" style="color: rgba(50,50,80,0.75); font-size: 26px; text-decoration: none; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: inline-block;" onmouseover="this.style.color='#2563eb'; this.style.transform='translateY(-6px) scale(1.15)'; this.style.filter='drop-shadow(0 8px 12px rgba(37,99,235,0.35))'" onmouseout="this.style.color='rgba(50,50,80,0.75)'; this.style.transform='translateY(0) scale(1)'; this.style.filter='none'">
+      <i class="ri-facebook-circle-line"></i>
+    </a>
+    <a id="ftEmail" href="#" style="color: rgba(50,50,80,0.75); font-size: 26px; text-decoration: none; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: inline-block;" onmouseover="this.style.color='#2563eb'; this.style.transform='translateY(-6px) scale(1.15)'; this.style.filter='drop-shadow(0 8px 12px rgba(37,99,235,0.35))'" onmouseout="this.style.color='rgba(50,50,80,0.75)'; this.style.transform='translateY(0) scale(1)'; this.style.filter='none'">
+      <i class="ri-mail-open-line"></i>
+    </a>
+  </div>
+  <div id="copyrightText" style="color: rgba(50, 50, 80, 0.65); font-size: 13px; font-weight: 500; text-align: center; letter-spacing: 0.5px;">
+    &copy; 2026 - Dr. Nunuk Suryanti, SP.d., MP.d
+  </div>
+</footer>
+
+<!-- Public site logic is handled in js/public-app.js -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-client.js"></script>
+<script src="js/public-app.js?v=14"></script>
+</body>
+</html>

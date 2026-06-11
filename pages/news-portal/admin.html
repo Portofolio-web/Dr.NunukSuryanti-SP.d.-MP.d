@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="../../css/theme.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>News Dashboard | TriDharma Portal</title>
+  <link rel="stylesheet" href="./style.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      corePlugins: {
+        preflight: false,
+      }
+    }
+  </script>
+</head>
+<body class="admin-page  min-h-screen flex flex-col">
+  <header class="site-header">
+    <div class="brand-row">
+      <a class="brand" href="./index.html">TriDharma News</a>
+      <button id="themeToggle" class="theme-toggle" aria-label="Toggle dark mode">Dark</button>
+    </div>
+    <nav class="main-nav" aria-label="Dashboard navigation">
+      <a href="./index.html">Headlines</a>
+      <a href="./admin.html" class="active">Dashboard</a>
+      <a href="../research.html">Research</a>
+      <a href="../education.html">Education</a>
+      <a href="../community.html">Community</a>
+    </nav>
+  </header>
+
+  <main class="admin-grid  flex-1">
+    <section class="admin-panel">
+      <div class="section-header">
+        <span class="eyebrow">Content management</span>
+        <h1>Publish an article</h1>
+        <p>Use this dashboard to add a new story, preview the card, and keep the portal feed current.</p>
+      </div>
+
+      <form id="storyForm" class="story-form">
+        <div class="form-row">
+          <label for="storyTitle">Headline</label>
+          <input id="storyTitle" name="title" type="text" required placeholder="Enter story headline" />
+        </div>
+        <div class="form-row">
+          <label for="storySummary">Summary</label>
+          <textarea id="storySummary" name="summary" rows="4" required placeholder="Enter a short summary."></textarea>
+        </div>
+        <div class="form-row two-column">
+          <div>
+            <label for="storyCategory">Category</label>
+            <input id="storyCategory" name="category" type="text" required placeholder="Category" />
+          </div>
+          <div>
+            <label for="storyAuthor">Author</label>
+            <input id="storyAuthor" name="author" type="text" required placeholder="Author name" />
+          </div>
+        </div>
+        <div class="form-row two-column">
+          <div>
+            <label for="storyDate">Published</label>
+            <input id="storyDate" name="date" type="date" required />
+          </div>
+          <div>
+            <label for="storyImage">Image URL</label>
+            <input id="storyImage" name="image" type="url" placeholder="https://example.com/image.jpg" />
+          </div>
+        </div>
+        <div class="form-row">
+          <label for="storyUrl">Read more URL</label>
+          <input id="storyUrl" name="url" type="url" placeholder="https://" />
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Add story</button>
+          <button type="button" id="clearStorage" class="btn btn-secondary">Reset sample data</button>
+        </div>
+      </form>
+
+      <div class="preview-card">
+        <span class="eyebrow">Preview</span>
+        <article class="news-card preview" id="previewCard">
+          <div class="news-card-media">
+            <img src="https://images.unsplash.com/photo-1496307042754-b4aa456c4a2d?auto=format&fit=crop&w=1200&q=80" alt="Preview image" />
+          </div>
+          <div class="news-card-content">
+            <span class="news-card-meta">Category • Author • Date</span>
+            <h2 class="news-card-title">Article preview headline</h2>
+            <p class="news-card-summary">A short summary appears here as you type fields above.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <aside class="admin-sidebar">
+      <div class="sidebar-card">
+        <span class="eyebrow">Dashboard overview</span>
+        <p>Changes are saved to browser storage so you can refresh the page and keep the current feed in the portal.</p>
+      </div>
+      <div class="sidebar-card">
+        <span class="eyebrow">Data source</span>
+        <p>This portal uses a JSON-like article collection in JavaScript. Add stories via the dashboard and they appear on the homepage feed.</p>
+      </div>
+    </aside>
+  </main>
+
+  <footer class="site-footer admin-footer">
+    <p>Admin dashboard for TriDharma News Portal.</p>
+  </footer>
+
+  <script src="../../js/success-modal.js"></script>
+  <script src="./script.js"></script>
+</body>
+</html>
+
+
+
+

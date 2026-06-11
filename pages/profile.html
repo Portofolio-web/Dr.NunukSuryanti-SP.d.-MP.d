@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+  <link rel="stylesheet" href="../css/theme.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="Profil - Portofolio Tri Dharma">
+  <title>Profil - Portofolio Tri Dharma</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/style.css?v=11">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      corePlugins: {
+        preflight: false,
+      }
+    }
+  </script>
+  <style>
+    .profile-detailed-section {
+      max-width: 900px;
+      margin: 32px auto;
+      padding: 24px;
+      background: var(--bg-card);
+      border-radius: 16px;
+    }
+    
+    .profile-detailed-section h3 {
+      margin-bottom: 16px;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+    
+    .profile-stat {
+      display: inline-block;
+      margin-right: 32px;
+      margin-bottom: 16px;
+    }
+    
+    .profile-stat-number {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--accent-blue);
+    }
+    
+    .profile-stat-label {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+    
+    .social-links {
+      display: flex;
+      gap: 16px;
+      margin-top: 16px;
+    }
+    
+    .social-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      background: var(--accent-blue);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: opacity 0.3s;
+    }
+    
+    .social-btn:hover {
+      opacity: 0.8;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col">
+
+<header>
+  <div class="header-top-row">
+    <a href="../index.html" class="brand-logo-zone" id="brandName">
+      Nama Pemilik Website
+    </a>
+
+    <div class="center-search-pill">
+      <i class="ri-search-line"></i>
+      <input
+        type="text"
+        id="newsGlobalSearch"
+        class="pill-search-input"
+        placeholder="Telusuri topik..."
+      >
+    </div>
+
+    <div class="right-actions-zone">
+      <button id="themeToggleBtn" class="icon-btn">
+        <i id="themeIcon" class="ri-sun-line"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="header-tabs-row">
+    <a href="../index.html" class="nav-tab-item">Beranda</a>
+    <a href="profile.html" class="nav-tab-item active">Profil</a>
+    <a href="education.html" class="nav-tab-item">Pendidikan</a>
+    <a href="research.html" class="nav-tab-item">Penelitian</a>
+    <a href="community.html" class="nav-tab-item">Pengabdian</a>
+  </div>
+</header>
+
+<main class="google-news-workspace  flex-1">
+
+  <div class="profile-premium-box">
+    <div class="profile-premium-inner">
+      <div class="profile-left-avatar">
+        <img
+          id="mainProfileImg"
+          src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400"
+          alt="Foto Pemilik"
+        >
+      </div>
+
+      <div class="profile-right-bio">
+        <h2 id="profileOwnerName">Loading Profil...</h2>
+        <p id="profileBioText">
+          Selamat datang di halaman profil.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="profile-detailed-section">
+    <h3>Statistik & Pencapaian</h3>
+    
+    <div class="profile-stat">
+      <div class="profile-stat-number" id="statPendidikan">0</div>
+      <div class="profile-stat-label">Dokumen Pendidikan</div>
+    </div>
+    
+    <div class="profile-stat">
+      <div class="profile-stat-number" id="statPenelitian">0</div>
+      <div class="profile-stat-label">Publikasi Penelitian</div>
+    </div>
+    
+    <div class="profile-stat">
+      <div class="profile-stat-number" id="statPengabdian">0</div>
+      <div class="profile-stat-label">Program Pengabdian</div>
+    </div>
+  </div>
+
+  <div class="profile-detailed-section">
+    <h3>Hubungi Saya</h3>
+    <div class="social-links">
+      <button id="contactWA" class="social-btn">
+        <i class="ri-whatsapp-line"></i> WhatsApp
+      </button>
+      <button id="contactFB" class="social-btn">
+        <i class="ri-facebook-circle-line"></i> Facebook
+      </button>
+      <button id="contactEmail" class="social-btn">
+        <i class="ri-mail-open-line"></i> Email
+      </button>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <div class="footer-links-row">
+    <a id="ftWA" href="#" target="_blank" class="footer-anchor">
+      <i class="ri-whatsapp-line"></i> WhatsApp
+    </a>
+
+    <a id="ftFB" href="#" target="_blank" class="footer-anchor">
+      <i class="ri-facebook-circle-line"></i> Facebook
+    </a>
+
+    <a id="ftEmail" href="#" class="footer-anchor">
+      <i class="ri-mail-open-line"></i> E-Mail
+    </a>
+  </div>
+
+  <div class="copyright-text" id="copyrightText">
+    © 2026 Google News Style Portfolio System.
+  </div>
+</footer>
+
+<script src="../firebase/firebase-config.js"></script>
+<script src="../js/app.js"></script>
+<script src="../js/theme.js"></script>
+<script src="../js/profile.js"></script>
+<script src="../js/firebase.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+  // Load profile data
+  const profileData = await loadProfileData();
+  
+  // Update statistics
+  const dbEdu = JSON.parse(localStorage.getItem("db_edu_v5")) || [];
+  const dbRes = JSON.parse(localStorage.getItem("db_res_v5")) || [];
+  const dbSrv = JSON.parse(localStorage.getItem("db_srv_v5")) || [];
+  
+  document.getElementById("statPendidikan").textContent = dbEdu.length;
+  document.getElementById("statPenelitian").textContent = dbRes.length;
+  document.getElementById("statPengabdian").textContent = dbSrv.length;
+  
+  // Setup contact buttons
+  document.getElementById("contactWA").onclick = () => {
+    const wa = profileData.wa;
+    if(!wa) return alert("Kontak WhatsApp belum diatur.");
+    let waHref = wa;
+    const digits = wa.replace(/[^\d\+]/g, '');
+    if(/^\+?\d{6,}$/.test(digits)) waHref = 'https://wa.me/' + digits.replace(/^\+/, '');
+    else if(!/^https?:\/\//i.test(waHref)) waHref = 'https://' + waHref;
+    window.open(waHref, '_blank');
+  };
+  
+  document.getElementById("contactFB").onclick = () => {
+    const fb = profileData.fb;
+    if(!fb) return alert("Tautan Facebook belum diatur.");
+    let fbHref = fb;
+    if(!/^https?:\/\//i.test(fbHref)) fbHref = 'https://facebook.com/' + fbHref.replace(/^@/, '');
+    window.open(fbHref, '_blank');
+  };
+  
+  document.getElementById("contactEmail").onclick = () => {
+    window.open("mailto:" + (profileData.email || "admin@domain.com"), '_blank');
+  };
+  
+  // Search functionality
+  document.getElementById("newsGlobalSearch").addEventListener("input", (e) => {
+    alert("Pencarian akan diarahkan ke halaman utama");
+  });
+});
+</script>
+
+</body>
+</html>
